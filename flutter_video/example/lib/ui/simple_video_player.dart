@@ -47,6 +47,8 @@ class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
                   ClosedCaption(text: _controller.value.caption.text),
                   _PlayPauseOverlay(controller: _controller),
                   VideoProgressIndicator(_controller, allowScrubbing: true),
+//                  _ProgressBarOverlay(controller: _controller),
+                  _LockScreenOverlay(controller: _controller),
                 ],
               ),
             ),
@@ -57,6 +59,41 @@ class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
   }
 }
 
+//class _PlayPauseOverlay extends StatelessWidget {
+//  const _PlayPauseOverlay({Key key, this.controller}) : super(key: key);
+//
+//  final VideoPlayerController controller;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Stack(
+//      children: <Widget>[
+//        AnimatedSwitcher(
+//          duration: Duration(milliseconds: 50),
+//          reverseDuration: Duration(milliseconds: 200),
+//          child: controller.value.isPlaying
+//              ? SizedBox.shrink()
+//              : Container(
+//                  color: Colors.black26,
+//                  child: Center(
+//                    child: Icon(
+//                      Icons.play_arrow,
+//                      color: Colors.white,
+//                      size: 50.0,
+//                    ),
+//                  ),
+//                ),
+//        ),
+//        GestureDetector(
+//          onTap: () {
+//            controller.value.isPlaying ? controller.pause() : controller.play();
+//          },
+//        ),
+//      ],
+//    );
+//  }
+//}
+
 class _PlayPauseOverlay extends StatelessWidget {
   const _PlayPauseOverlay({Key key, this.controller}) : super(key: key);
 
@@ -64,30 +101,61 @@ class _PlayPauseOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AnimatedSwitcher(
-          duration: Duration(milliseconds: 50),
-          reverseDuration: Duration(milliseconds: 200),
-          child: controller.value.isPlaying
-              ? SizedBox.shrink()
-              : Container(
-                  color: Colors.black26,
-                  child: Center(
-                    child: Icon(
-                      Icons.play_arrow,
-                      color: Colors.white,
-                      size: 100.0,
-                    ),
-                  ),
-                ),
-        ),
-        GestureDetector(
-          onTap: () {
-            controller.value.isPlaying ? controller.pause() : controller.play();
-          },
-        ),
+    return GestureDetector(
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 50),
+        reverseDuration: Duration(milliseconds: 200),
+        child: controller.value.isPlaying
+            ? Icon(
+                Icons.pause,
+                color: Colors.white,
+                size: 30.0,
+              )
+            : Icon(
+                Icons.play_arrow,
+                color: Colors.white,
+                size: 30.0,
+              ),
+      ),
+      onTap: () {
+        controller.value.isPlaying ? controller.pause() : controller.play();
+      },
+    );
+  }
+}
+
+class _ProgressBarOverlay extends StatelessWidget {
+  const _ProgressBarOverlay({Key key, this.controller}) : super(key: key);
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        _PlayPauseOverlay(controller: controller),
+        VideoProgressIndicator(controller, allowScrubbing: true),
       ],
+    );
+  }
+}
+
+class _LockScreenOverlay extends StatelessWidget {
+  const _LockScreenOverlay({Key key, this.controller}) : super(key: key);
+
+  final VideoPlayerController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 15),
+      height: double.infinity,
+      alignment: Alignment.centerLeft,
+      child: Icon(
+        Icons.lock_open,
+        color: Colors.white,
+        size: 30,
+      ),
     );
   }
 }
