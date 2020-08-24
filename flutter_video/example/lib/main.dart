@@ -1,13 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_example/provider/providers.dart';
 import 'package:flutter_video_example/ui/simple_video_player.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(
     MaterialApp(
-      home: App(),
+      home: MainApplication(),
     ),
   );
+}
+
+class MainApplication extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(providers: ProviderInjector.providers, child: App());
+  }
 }
 
 class App extends StatelessWidget {

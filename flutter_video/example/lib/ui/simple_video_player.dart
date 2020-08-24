@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_video_example/provider/LockMode.dart';
 import 'package:flutter_video_example/test_url.dart';
 import 'package:video_player/video_player.dart';
+import 'package:provider/provider.dart';
 
 class SimpleVideoPlayer extends StatefulWidget {
   @override
@@ -34,6 +36,8 @@ class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    bool isLocked = context.watch<LockMode>().isLock;
+
     return SingleChildScrollView(
       child: Column(
         children: <Widget>[
@@ -44,9 +48,11 @@ class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
                 alignment: Alignment.bottomCenter,
                 children: <Widget>[
                   VideoPlayer(_controller),
-                  ClosedCaption(text: _controller.value.caption.text),
-                  _PlayPauseOverlay(controller: _controller),
-                  VideoProgressIndicator(_controller, allowScrubbing: true),
+//                  ClosedCaption(text: _controller.value.caption.text),
+                  isLocked
+                      ? Container(width: 0, height: 0)
+                      : _PlayPauseOverlay(controller: _controller),
+//                  VideoProgressIndicator(_controller, allowScrubbing: true),
 //                  _ProgressBarOverlay(controller: _controller),
                   _LockScreenOverlay(controller: _controller),
                 ],
@@ -142,19 +148,35 @@ class _ProgressBarOverlay extends StatelessWidget {
 
 class _LockScreenOverlay extends StatelessWidget {
   const _LockScreenOverlay({Key key, this.controller}) : super(key: key);
-
   final VideoPlayerController controller;
 
   @override
   Widget build(BuildContext context) {
+    bool isLocked = context.watch<LockMode>().isLock;
+
     return Container(
       padding: EdgeInsets.only(left: 15),
       height: double.infinity,
       alignment: Alignment.centerLeft,
-      child: Icon(
-        Icons.lock_open,
-        color: Colors.white,
-        size: 30,
+      child: GestureDetector(
+        child: AnimatedSwitcher(
+          duration: Duration(milliseconds: 50),
+          reverseDuration: Duration(milliseconds: 200),
+          child: isLocked
+              ? Icon(
+                  Icons.lock,
+                  color: Colors.yellow,
+                  size: 30,
+                )
+              : Icon(
+                  Icons.lock_open,
+                  color: Colors.white,
+                  size: 30,
+                ),
+        ),
+        onTap: () {
+          context.read<LockMode>().setLock(!isLocked);
+        },
       ),
     );
   }
