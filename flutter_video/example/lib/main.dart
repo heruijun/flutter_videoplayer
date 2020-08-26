@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_video_example/provider/providers.dart';
 import 'package:flutter_video_example/ui/simple_video_player.dart';
 import 'package:provider/provider.dart';
@@ -21,27 +22,20 @@ class MainApplication extends StatelessWidget {
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 1,
-      child: Scaffold(
-        key: const ValueKey<String>('home_page'),
-        appBar: AppBar(
-          title: const Text('Video player example'),
-          bottom: const TabBar(
-            isScrollable: true,
-            tabs: <Widget>[
-              Tab(
-                icon: Icon(Icons.cloud),
-                text: "Remote",
-              ),
-            ],
-          ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            SimpleVideoPlayer(),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Video player example'),
+      ),
+      body: OrientationBuilder(
+        builder: (context, orientation) {
+          switch (orientation) {
+            case Orientation.portrait:
+              return SimpleVideoPlayer();
+            case Orientation.landscape:
+              return SimpleVideoPlayer();
+          }
+          return null;
+        },
       ),
     );
   }

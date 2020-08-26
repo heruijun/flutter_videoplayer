@@ -12,10 +12,12 @@ class SimpleVideoPlayer extends StatefulWidget {
 
 class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
   VideoPlayerController _controller;
+  GlobalKey playerKey;
 
   @override
   void initState() {
     super.initState();
+    playerKey = GlobalKey();
     _controller = VideoPlayerController.network(
       TestUrl.testM3U8,
       videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
@@ -45,6 +47,7 @@ class _SimpleVideoPlayerState extends State<SimpleVideoPlayer> {
             child: AspectRatio(
               aspectRatio: _controller.value.aspectRatio,
               child: Stack(
+                key: playerKey,
                 alignment: Alignment.bottomCenter,
                 children: <Widget>[
                   VideoPlayer(_controller),
